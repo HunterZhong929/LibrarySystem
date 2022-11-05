@@ -5,7 +5,7 @@
 #include "Book.h"
 using namespace std;
 
-class Student
+class Teacher
 {
 private:
     string username;
