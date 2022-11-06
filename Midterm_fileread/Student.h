@@ -10,8 +10,8 @@ class Student
 private:
     string username;
     string password;
-    //int maxCopies = 5;
-    //int maxBorrowPeriod = 30;
+    static const int maxCopies = 5;
+    static const int maxBorrowPeriod = 30;
     vector<Book> borrowList;
 public:
     void searchBook();

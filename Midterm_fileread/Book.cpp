@@ -7,7 +7,7 @@ Book::Book() {
 	//string title;
 	//string author;
 	//string category;
-	int ID;
+	ID = IdAssign++;
 	//string readerName;
 	int startDate = 0;
 	int expirationDate = 0;
@@ -18,10 +18,11 @@ Book::Book(string isbn, string t, string a, string c) {
 	title = t;
 	author = a;
 	category = c;
-	//int ID;
+	ID = IdAssign++;
 	//string readerName;
 	int startDate = 0;
 	int expirationDate = 0;
+	//TODO the date will be assigne by the ctime counter function.
 }
 
 
@@ -38,3 +39,18 @@ std::ostream &operator<<(std::ostream &os, const Book &rhs) {
 	return os;
 }
 
+std::istream& operator>>(std::istream &is, Book &book){
+	int id, startDate, expirationDate;
+	string isbn, readerName, title, author,category;
+	is >>title>>author>>isbn>>category>>readerName>>id>>startDate>>expirationDate;
+	book.setTitle(title);
+	book.setISBN(isbn);
+	book.setAuthor(author);
+	book.setReaderName(readerName);
+	book.setID(id);
+	book.setCategory(category);
+	book.setStartDate(startDate);
+	book.setExpirationDate(expirationDate);
+	return is;
+
+}

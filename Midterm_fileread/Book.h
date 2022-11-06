@@ -5,6 +5,7 @@ using namespace std;
 
 class Book {
 private:
+	static int IdAssign;//all the ids will be assigned during runtime
 	string ISBN;
 	string title;
 	string author;
@@ -30,7 +31,9 @@ public:
 	void setReaderName(const string &readerName_) { readerName = readerName_; }
 	int getStartDate() const { return startDate; }
 	void setStartDate(int startDate_) { startDate = startDate_; }
+	int getExpirationDate() const { return expirationDate; }
+	void setExpirationDate(int expirationDate_) { expirationDate = expirationDate_; }
 	friend std::ostream &operator<<(std::ostream &os, const Book &rhs);
-
+	friend std::istream &operator>>(std::istream &is, Book& book);
 	//overload >> to print all info
 };
