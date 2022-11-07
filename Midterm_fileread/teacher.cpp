@@ -5,7 +5,7 @@
 #include "Teacher.h"
 using namespace std;
 
-class Teacher
+/*class Teacher
 {
 private:
     string username;
@@ -22,7 +22,7 @@ public:
     string getUsername();
     //
 
-};
+};*/
 
 void Teacher::borrowBook()
 {
@@ -38,10 +38,12 @@ void Teacher::borrowPeriod()
     cout << "You can't borrow the book formore than 50 days" << endl;
   else
     maxBorrowPeriod++;
+}
 
-void Teacher searchBook()
+void Teacher::searchBook()
 {
-  cin >> bookTitle;
+    string bookTitle;
+    cin >> bookTitle;
     if(BookTitles.count(bookTitle)) 
         cout << "This book exist" << endl;
     else
