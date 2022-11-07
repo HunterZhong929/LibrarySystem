@@ -16,6 +16,7 @@ private:
 public:
     void searchBook();
     void borrowBook(); 
+    void borrowPeriod();
     
     void returnBook();  //
     string getUsername();
