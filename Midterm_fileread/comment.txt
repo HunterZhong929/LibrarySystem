@@ -1,0 +1,5 @@
+The format of stduent.txt
+Role(0=student, 1=teacher)  user_name   password
+
+The format of book.txt
+ISBN    Title  Author  Category    Num_of_copies
