@@ -14,6 +14,7 @@ private:
 	string readerName;
 	int startDate;
 	int expirationDate;
+	bool isBorrowed;
 public:
 	Book();
 	Book(string isbn, string t, string a, string c);

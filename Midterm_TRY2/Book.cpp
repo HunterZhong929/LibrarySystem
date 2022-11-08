@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include<ctime>
 #include "Book.h"
 using namespace std;
 
@@ -10,74 +11,24 @@ Book::Book() {
 	title = " ";
 	author = " ";
 	category = " ";
-	ID = 0;
+	ID = IDassign++;
 	readerName = " ";
 	borrowDate = 0;
 	expirationDate = 0;
 }
 
-Book::Book(string isbn, string TITLE, string AUTHOR, string CATEGORY, int id) {
+Book::Book(string isbn, string t, string a, string c) {
 	ISBN = isbn;
-	title = TITLE;
-	author = AUTHOR;
-	category = CATEGORY;
-	ID = id;
-	readerName = " ";
-	borrowDate = clock();
-	expirationDate = clock() + 30000;
+	title = t;
+	author = a;
+	category = c;
+	ID = IDassign++;
+	//string readerName;
+	int startDate = 0;
+	int expirationDate = 0;
+	//TODO the date will be assigne by the ctime counter function.
 }
 
-//getter functions
-string Book::getISBN() {
-	return ISBN;
-}
-string Book::getTitle() {
-	return title;
-}
-string Book::getAuthor() {
-	return author;
-}
-string Book::getCategory() {
-	return category;
-}
-int Book::getID() {
-	return ID;
-}
-string Book::getReaderName() {
-	return readerName;
-}
-int Book::getBorrowDate() {
-	return borrowDate;
-}
-int Book::getExpirationDate() {
-	return expirationDate;
-}
-
-//setter functions
-void Book::setISBN(string input) {
-	ISBN = input;
-}
-void Book::setTitle(string input) {
-	title = input;
-}
-void Book::setAuthor(string input) {
-	author = input;
-}
-void Book::setCategory(string input) {
-	category = input;
-}
-void Book::setID(int input) {
-	ID = input;
-}
-void Book::setReaderName(string input) {
-	readerName = input;
-}
-void Book::setBorrowDate(int input) {
-	borrowDate = input;
-}
-void Book::setExpirationDate(int input) {
-	expirationDate = input;
-}
 
 //overloads
 //ofstream overload will be used to output things to a file (unused in midterm project)
@@ -108,7 +59,36 @@ istream& operator >>(istream& input, Book& book) {
 	//return input;
 	//the overload will read in the first 4 data points and main reads in the copy data point and makes a for loop
 }
+/**
+ * @brief for easier sorting of the book class, based on 3.4.1 of project description 
+ * 
+ * @param book2 
+ * @return true 
+ * @return false 
+ */
+bool operator<(const Book& book1,const Book& book2){
+	if(book1.getIsBorrowed()>book2.getIsBorrowed()){
+		return true;//1 when the book1 is borrowed
+	}
+	time_t currentTime;
+	time(&currentTime);
+	if(difftime(book1.getExpirationDate(),currentTime)>difftime(book2.getExpirationDate(),currentTime)){
+		return true;//2 rank by which book is closer to expiration date
+	}
+	if(book1.getTitle().compare(book2.getTitle())<0){
+		return false;
+	}
+	if(book1.getAuthor().compare(book2.getAuthor())<0){
+		return false;
+	}
+	if(book1.getISBN().compare(book2.getISBN())<0){
+		return false;
+	}
+	if(book1.getID()<book2.getID()){
+		return false;
+	}
 
+}
 //make an overload = function
 /*
 void Book::operator =(Book& book2) {
