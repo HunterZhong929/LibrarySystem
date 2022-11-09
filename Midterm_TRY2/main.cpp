@@ -1,25 +1,35 @@
 #include <iostream>
 #include "Student.h"
+
 #include <vector>
 #include <fstream>
 using namespace std;
 
 void scanBook(vector<Book>& booklist);
 void scanStudent(vector<Student>& studentList);
-
+int Book::IDassign = 0;
 int main() {
 	vector<Book> bookList;
 	vector<Student> studentList;
+	//------testing code---------
 	//vector<Teacher> teacherList;
+	Student test = Student();
+	test.setUsername("test");
+	test.setPassword("1234");
+	
 	scanBook(bookList);
 	for (int i = 0; i < bookList.size(); i++) {
 		//cout << bookList[i].getISBN() << " " << bookList[i].getTitle() << " " << bookList[i].getAuthor() << " " << bookList[i].getCategory() << endl;
-		cout << bookList[i];
+		cout<<bookList[i];
 	}
-	
+	test.borrowBook(1,bookList);
+	test.searchBook(bookList,1);
+	vector<string> searchArgs;
+	searchArgs.push_back("Advanced_Calculus");
+	test.searchBook(bookList,searchArgs);
 	scanStudent(studentList);	//scan student will do both teacher(1) and student(0)
 	for (int i = 0; i < studentList.size(); i++) {
-		cout << studentList[i];
+		cout<<studentList[i];
 	}
 	//cout << "Please enter your username and password: ";
 	//cin >> username >> password;

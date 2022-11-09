@@ -1,9 +1,9 @@
 #include <iostream>
+#pragma once
 using namespace std;
 
 class Book {
 private:
-	static int IDassign;
 	string ISBN;
 	string title;
 	string author;
@@ -18,11 +18,10 @@ public:
 	Book();
 	Book(string title_, string author_, string categroy_, string ISBN_ );
 	Book(string isbn, string TITLE, string AUTHOR, string CATEGORY, int id);
-	
-	
+	static int IDassign;	
 	//overloaded << and >>
-	friend ostream& operator <<(ostream& output, Book& book);
-	friend istream& operator >>(istream& input, Book& book);
+	friend ostream& operator<<(ostream& output, Book& book);
+	friend istream& operator>>(istream& input, Book& book);
 	friend bool operator<(const Book& book1,const Book& book2);
 	bool getIsBorrowed() const { return isBorrowed; }
 	void setIsBorrowed(bool isBorrowed_) { isBorrowed = isBorrowed_; }

@@ -32,14 +32,14 @@ Book::Book(string isbn, string t, string a, string c) {
 
 //overloads
 //ofstream overload will be used to output things to a file (unused in midterm project)
-ostream& operator <<(ostream& output, Book& book) {
+ostream& operator<<(ostream& output, Book& book) {
 	output << book.getISBN() << " " << book.getTitle() << " " << book.getAuthor() << " " << book.getCategory() << " " << book.getID() << endl;
 	return output;
 	//add more
 }
 
 //ifstream overload will be used to read in data from a file
-istream& operator >>(istream& input, Book& book) {
+istream& operator>>(istream& input, Book& book) {
 	//fin >> book;
 	string ISBN;
 	string title;
@@ -87,6 +87,7 @@ bool operator<(const Book& book1,const Book& book2){
 	if(book1.getID()<book2.getID()){
 		return false;
 	}
+	else return false;
 
 }
 //make an overload = function

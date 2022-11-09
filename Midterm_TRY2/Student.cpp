@@ -1,5 +1,4 @@
 #include "Student.h"
-#include "Book.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -37,7 +36,7 @@ vector<Book> Student::searchBook(vector<Book> bookList, vector<string> searchKey
 			ret.push_back(i);
 		}
 	}
-	std::sort(ret.begin(),ret.end());
+	std::sort(ret.begin(),ret.end());//TODO write our own sorting algorithm for book class
 	return ret;
 }
 
@@ -62,7 +61,9 @@ Book Student::searchBook(vector<Book> bookList, int id){
 	}
 	return bookList[mid];
 
+
 }
+//TODO: modify the code so it works for both teacher and student
 void Student::borrowBook(int id, vector<Book> bookList) {
 	//checks if any books this student owns is overdue
 
