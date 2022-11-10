@@ -23,10 +23,10 @@ int main() {
 		cout<<bookList[i];
 	}
 	test.borrowBook(1,bookList);
-	test.searchBook(bookList,1);
+	Book testBook = test.searchBook(bookList,1);
 	vector<string> searchArgs;
 	searchArgs.push_back("Advanced_Calculus");
-	test.searchBook(bookList,searchArgs);
+	vector<Book> testVector = test.searchBook(bookList,searchArgs);
 	scanStudent(studentList);	//scan student will do both teacher(1) and student(0)
 	for (int i = 0; i < studentList.size(); i++) {
 		cout<<studentList[i];
