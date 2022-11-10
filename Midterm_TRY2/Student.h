@@ -41,5 +41,5 @@ public:										//search book must also organize the bookList
 	void removeBook(int id, vector<Book>& library);
 	bool getIsStudent() const { return isStudent; }
 	void setIsStudent(bool isStudent_) { isStudent = isStudent_; }
-
+	void sortBook(vector<Book> bookList);
 };

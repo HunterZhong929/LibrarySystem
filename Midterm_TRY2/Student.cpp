@@ -2,12 +2,13 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <ctime>
 #include<algorithm>
 using namespace std;
 
 Student::Student() {
 	maxCopies = 5;
-	maxBorrowPeriod = 30;
+	maxBorrowPeriod = 150;//30 days = 150secs
 
 }
 
@@ -39,7 +40,13 @@ vector<Book> Student::searchBook(vector<Book> bookList, vector<string> searchKey
 	std::sort(ret.begin(),ret.end());//TODO write our own sorting algorithm for book class
 	return ret;
 }
-
+/**
+ * @brief search a book using only ID, using binary search for the ID, the function will first sort the passed-vector of Books
+ * 
+ * @param bookList a vector of books
+ * @param id 
+ * @return Book 
+ */
 Book Student::searchBook(vector<Book> bookList, int id){
 	sort(bookList.begin(),bookList.end());
 	//now the list is sorted, do the binary search
@@ -59,6 +66,10 @@ Book Student::searchBook(vector<Book> bookList, int id){
 			high = mid -1;
 		}
 	}
+
+	if(bookList[mid].getIsBorrowed()){
+		throw std::runtime_error("the book you requested for is already been borrowed");
+	}
 	return bookList[mid];
 
 
@@ -66,9 +77,13 @@ Book Student::searchBook(vector<Book> bookList, int id){
 //TODO: modify the code so it works for both teacher and student
 void Student::borrowBook(int id, vector<Book> bookList) {
 	//checks if any books this student owns is overdue
+	time_t currentTime;
+	time(&currentTime);
+
 
 	for (int i = 0; i < borrowedList.size(); i++) {
-		if ( (borrowedList[i].getExpirationDate() - borrowedList[i].getBorrowDate()) > maxBorrowPeriod) {	//NEED TO CHANGE maxBorrowPeriod to something appropriate
+		
+		if ( (currentTime-borrowedList[i].getBorrowDate()) > maxBorrowPeriod) {	//NEED TO CHANGE maxBorrowPeriod to something appropriate
 			//book is overdue and cannot borrow any new book
 			cout << "A book is past it's expiration date." << endl;
 			return;
@@ -84,8 +99,10 @@ void Student::borrowBook(int id, vector<Book> bookList) {
 		//checks through the library's books to find the appropriate ID, then checks the readerName to see if this book is not borrwed
 		if ( (bookList[i].getID() == id) && (bookList[i].getReaderName() == " ")) {
 			bookList[i].setReaderName(username);
-			bookList[i].setBorrowDate(clock());
-			bookList[i].setExpirationDate(clock() + maxBorrowPeriod);		//NEED TO CHANGE MAXBORROW PERIOD IN STUDENT.H
+
+		
+			bookList[i].setBorrowDate(currentTime);
+			bookList[i].setExpirationDate(currentTime + 5);		//NEED TO CHANGE MAXBORROW PERIOD IN STUDENT.H
 			cout << "You have borrowed the book " << bookList[i].getTitle() << " with the ID " << bookList[i].getID() << endl;
 			return;
 		}

@@ -41,5 +41,6 @@ public:
 	void setBorrowDate(int borrowDate_) { borrowDate = borrowDate_; }
 	int getExpirationDate() const { return expirationDate; }
 	void setExpirationDate(int expirationDate_) { expirationDate = expirationDate_; }
+	
 	//void operator =(Book& book2);
 };

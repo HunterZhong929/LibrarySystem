@@ -15,6 +15,7 @@ Book::Book() {
 	readerName = " ";
 	borrowDate = 0;
 	expirationDate = 0;
+	isBorrowed = false;
 }
 
 Book::Book(string isbn, string t, string a, string c) {
@@ -26,6 +27,7 @@ Book::Book(string isbn, string t, string a, string c) {
 	//string readerName;
 	int startDate = 0;
 	int expirationDate = 0;
+	isBorrowed = false;
 	//TODO the date will be assigne by the ctime counter function.
 }
 
