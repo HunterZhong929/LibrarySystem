@@ -23,6 +23,10 @@ public:
 	friend ostream& operator<<(ostream& output, Book& book);
 	friend istream& operator>>(istream& input, Book& book);
 	friend bool operator<(const Book& book1,const Book& book2);
+	friend bool operator>(const Book& book1,const Book& book2);
+	friend bool operator<=(const Book& book1, const Book& book2);
+	friend bool operator>=(const Book& book1, const Book& book2);
+	friend bool operator==(const Book& book1, const Book& book2);
 	bool getIsBorrowed() const { return isBorrowed; }
 	void setIsBorrowed(bool isBorrowed_) { isBorrowed = isBorrowed_; }
 	string getISBN() const { return ISBN; }

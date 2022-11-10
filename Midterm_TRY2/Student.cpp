@@ -5,7 +5,49 @@
 #include <ctime>
 #include<algorithm>
 using namespace std;
+int partition(vector<Book>& array, int low, int high) {
+	// TODO
+    int i = low;
+    int j = high -1;
+    Book pivot = array[high];
+    do{
+    while(array[i]<= pivot && i < high){
+        i++;
+    }
+    while(array[j]>= pivot && j > low){
+        j--;
+    }
+    if(i<j){
+        Book tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+    }
+    }
+    while(i<j);
+    if(array[i] > pivot){
+        Book tmp = array[i];
+        array[i] = array[high];
+        array[high] = tmp;
+    }
+    return i;
+}
 
+void quickSort(vector<Book>& array, int low, int high) {
+
+    if (low < high) {
+
+        // find the pivot element and move elements such that
+        // elements smaller than pivot are on left of pivot
+        // elements greater than pivot are on righ of pivot
+        int pi = partition(array, low, high);
+
+        // recursive call on the left of pivot
+        quickSort(array, low, pi - 1);
+
+        // recursive call on the right of pivot
+        quickSort(array, pi + 1, high);
+    }
+}
 Student::Student() {
 	maxCopies = 5;
 	maxBorrowPeriod = 150;//30 days = 150secs
@@ -48,7 +90,8 @@ vector<Book> Student::searchBook(vector<Book> bookList, vector<string> searchKey
  * @return Book 
  */
 Book Student::searchBook(vector<Book> bookList, int id){
-	sort(bookList.begin(),bookList.end());
+	quickSort(bookList, 0,bookList.size()-1);
+	//sort(bookList.begin(),bookList.end());
 	//TODO sort by id
 	//now the list is sorted, do the binary search
 	int low = 0;
@@ -103,7 +146,7 @@ void Student::borrowBook(int id, vector<Book> bookList) {
 
 		
 			bookList[i].setBorrowDate(currentTime);
-			bookList[i].setExpirationDate(currentTime + 5);		//NEED TO CHANGE MAXBORROW PERIOD IN STUDENT.H
+			bookList[i].setExpirationDate(currentTime + maxBorrowPeriod);		//NEED TO CHANGE MAXBORROW PERIOD IN STUDENT.H
 			cout << "You have borrowed the book " << bookList[i].getTitle() << " with the ID " << bookList[i].getID() << endl;
 			return;
 		}
@@ -188,7 +231,7 @@ void Student::removeBook(int id,vector<Book>& library) {
 Student::Student(bool isStudent_){
 	isStudent = isStudent_;
 	maxCopies = 10;
-	maxBorrowPeriod = 50;
+	maxBorrowPeriod = 250; //5sec*50days = 250
 }
 	
 	

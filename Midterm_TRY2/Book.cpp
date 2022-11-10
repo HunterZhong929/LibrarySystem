@@ -92,13 +92,23 @@ bool operator<(const Book& book1,const Book& book2){
 	else return false;
 
 }
-//make an overload = function
-/*
-void Book::operator =(Book& book2) {
-	ISBN = book2.ISBN;
-	title = book2.title;
-	author = book2.author;
-	category = book2.category;
-
+bool operator>(const Book& book1,const Book& book2) {
+	return !(book1<=book2);
 }
-*/
+
+bool operator<=(const Book& book1, const Book& book2) {
+	return ((book1<book2)||(book1==book2));
+}
+
+bool operator>=(const Book& book1, const Book& book2) {
+	return !(book1<book2);
+}
+
+
+bool operator==(const Book& book1,const Book& book2) {
+	
+	return (book1.getISBN() == book2.getISBN()&&
+	book1.getTitle() == book2.getTitle()&&
+	book1.getAuthor() == book2.getAuthor()&&
+	book1.getCategory() == book2.getCategory());
+}

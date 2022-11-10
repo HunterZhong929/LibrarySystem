@@ -42,4 +42,6 @@ public:										//search book must also organize the bookList
 	bool getIsStudent() const { return isStudent; }
 	void setIsStudent(bool isStudent_) { isStudent = isStudent_; }
 	void sortBook(vector<Book> bookList);
+	friend void quickSort(vector<Book>& bookList, int low, int high);
+	friend int partition(vector<Book>& array, int low, int high);
 };

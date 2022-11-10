@@ -36,7 +36,11 @@ int main() {
 	time_t t2;
 	time(&t2);
 	cout<<t2<<endl;
+	
+	//------------------------loading the library----------------------------
+	
 	scanBook(bookList);
+
 	for (int i = 0; i < bookList.size(); i++) {
 		//cout << bookList[i].getISBN() << " " << bookList[i].getTitle() << " " << bookList[i].getAuthor() << " " << bookList[i].getCategory() << endl;
 		cout<<bookList[i];
@@ -57,6 +61,7 @@ int main() {
 	Student loginStudent;
 	login(loginStudent);
 	vector<Book> searchResult;
+	//--------------------------main loop-------------------------------
 	while(true){
 		printMenu();
 		int input;
