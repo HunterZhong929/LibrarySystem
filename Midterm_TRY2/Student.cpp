@@ -49,6 +49,7 @@ vector<Book> Student::searchBook(vector<Book> bookList, vector<string> searchKey
  */
 Book Student::searchBook(vector<Book> bookList, int id){
 	sort(bookList.begin(),bookList.end());
+	//TODO sort by id
 	//now the list is sorted, do the binary search
 	int low = 0;
 	int high = bookList.size();
@@ -113,7 +114,11 @@ void Student::borrowBook(int id, vector<Book> bookList) {
 	//first check if this book has already been borrowed (see if readername == " ")
 
 }
-
+/**
+ * @brief given an ID, search for the book in the student's borrowed list, if it does not exist, throw error
+ * 
+ * @param id 
+ */
 void Student::returnBook(int id) {
 	int i;
 	for(i = 0;i<borrowedList.size();i++){
@@ -126,13 +131,17 @@ void Student::returnBook(int id) {
 	borrowedList.erase(borrowedList.begin()+i);
 
 }
-
+/**
+ * @brief given an ID, search it in the student's borrowed list, if it is null, throw error
+ * 
+ * @param id 
+ */
 void Student::renewBook(int id){
 	Book renew = searchBook(borrowedList,id);
 	time_t currentTime;
 	time(&currentTime);
 	renew.setBorrowDate(currentTime);
-	renew.setExpirationDate(renew.getBorrowDate()+30000);
+	renew.setExpirationDate(renew.getBorrowDate()+maxBorrowPeriod);
 	
 }
 
