@@ -16,7 +16,8 @@ void printMenu();
 int prompt_searchBook(int& idInput, vector<string>& searchArgs);
 void prompt_borrowBook();
 
-void printBookList();
+
+void printBookList(vector<Book>& booklist);
 int Book::IDassign = 0;
 time_t startDate;
 int main() {
@@ -55,6 +56,7 @@ int main() {
 	//printMenu();
 	Student loginStudent;
 	login(loginStudent);
+	vector<Book> searchResult;
 	while(true){
 		printMenu();
 		int input;
@@ -64,11 +66,14 @@ int main() {
 		switch(input){
 			case 1:
 				chooseSearch = prompt_searchBook(idInput,searchArgs);
-				if(chooseSearch){
-						loginStudent.searchBook(bookList,idInput);
+				if(!chooseSearch){
+						Book search = loginStudent.searchBook(bookList,idInput);
+						cout<<search;
 				}
-				else if(chooseSearch == 1){
-					loginStudent.searchBook(bookList, searchArgs);
+				else if(chooseSearch){
+					searchResult = loginStudent.searchBook(bookList, searchArgs);
+					printBookList(searchResult);
+					
 				}
 				break;
 			case 2:
@@ -84,6 +89,8 @@ int main() {
 	}
 
 }
+
+
 int dateCounter(){
 	time_t currentTime;
 	time(&currentTime);
@@ -104,7 +111,7 @@ int prompt_searchBook(int& idInput, vector<string>& searchArgs){
 	cin>>c;
 	switch(c){
 		case 'I':
-			
+			cout<<"input book id:";
 			cin>>idInput;
 			return 0;
 		case 'T':
@@ -124,6 +131,14 @@ int prompt_searchBook(int& idInput, vector<string>& searchArgs){
 		default:
 			cout<<"Invalid input"<<endl;
 	}	
+}
+inline void prompt_borrowBook(int& idInput) {
+	
+}
+inline void printBookList(vector<Book>& booklist) {
+	for(auto i:bookList){
+		cout<<i<<endl;
+	}
 }
 void userInterface(){
 	//PRINT MENU
