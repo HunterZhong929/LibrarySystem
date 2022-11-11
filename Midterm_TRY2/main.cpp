@@ -13,58 +13,60 @@ void login(Student& user);
 void scanBook(vector<Book>& booklist);
 void scanStudent(vector<Student>& studentList);
 int dateCounter();
+void printStudentMenu();
+void printTeacherMenu();
 int promptSearchBook(int& idInput, vector<string>& searchArgs);
 void promptBorrowBook(int& idInput);
 void promptReturnBook(int& idInput);
 void promptRenewBook(int& idInput);
 void promptAddBook(vector<string>& searchArgs);
 void promptRemoveBook(int& idInput);
-void printBookList(vector<Book>& booklist);
+void printBookList(vector<Book>& list);
 int Book::IDassign = 0;
+time_t Book::startTime;
 time_t startDate;
+
+
 
 int main() {
 	time(&startDate);
-	
+    Book::startTime = startDate;
 	//------testing code---------
 	//vector<Teacher> teacherList;
-	
+
 	Student test = Student();
 	test.setUsername("test");
 	test.setPassword("1234");
 	time_t t1;
 	time(&t1);
-	cout<<t1<<endl;
+	cout << t1 << endl;
 	//this_thread::sleep_for(chrono::milliseconds(5000));
-	time_t t2;
-	time(&t2);
-	cout<<t2<<endl;
+	time_t startTime;
+
+	time(&startTime);
 	
-	//------------------------loading the library----------------------------
-	
+	cout << startTime << endl;
 	scanBook(bookList);
 
+	//print book list
 	for (int i = 0; i < bookList.size(); i++) {
 		//cout << bookList[i].getISBN() << " " << bookList[i].getTitle() << " " << bookList[i].getAuthor() << " " << bookList[i].getCategory() << endl;
-		cout<<bookList[i];
+		cout << bookList[i];
 	}
 	//test.borrowBook(1,bookList);
-	Book testBook = test.searchBook(bookList,1);
+	Book testBook = test.searchBook(bookList, 1);
 	vector<string> searchArgs(4);
 	searchArgs.push_back("Advanced_Calculus");
-	vector<Book> testVector = test.searchBook(bookList,searchArgs);
+	vector<Book> testVector = test.searchBook(bookList, searchArgs);
 	scanStudent(studentList);	//scan student will do both teacher(1) and student(0)
 	for (int i = 0; i < studentList.size(); i++) {
-		cout<<studentList[i];
+		cout << studentList[i];
 	}
-	cout<<"The current date: day "<<dateCounter();
-	//cout << "Please enter your username and password: ";
-	//cin >> username >> password;
-	//printMenu();
+	cout << "The current date: day " << dateCounter();
+	
+
 	Student user;
 	login(user);
-	vector<Book> searchResult;
-	
 	if (user.getIsStudent()) {
 		system("clear");
 		printStudentMenu();
@@ -72,15 +74,16 @@ int main() {
 		system("clear");
 		printTeacherMenu();
 	}
-	//--------------------------main loop-------------------------------
-	try{
-		while (true) {
+	
+	while (true) {	
+		
+	
 		int input;
 		int idInput;
 		int chooseSearch;
 		vector<Book> searchResult;
 		cin >> input;
-
+		try{
 		switch (input) {
 		case 1:
 			chooseSearch = promptSearchBook(idInput, searchArgs); //params are ID input and vector for other search params
@@ -107,12 +110,13 @@ int main() {
 			break;
 		case 5:
 			promptAddBook(searchArgs);
-			user.addBook(searchArgs[0], searchArgs[1], searchArgs[2], searchArgs[3]);
-			//printBookList();
+			bookList.push_back(user.addBook(searchArgs[0], searchArgs[1], searchArgs[2], searchArgs[3]));
+			printBookList(bookList);
 			break;
 		case 6:
 			promptRemoveBook(idInput);
 			user.removeBook(idInput, bookList);
+			printBookList(bookList);
 			break;
 		case 0:
 			cout << "Logging out...";
@@ -120,9 +124,13 @@ int main() {
 			break;
 		}
 		}
-	} catch(runtime_error e){
-		cerr<<e.what()<<endl;
+
+		catch(runtime_error e){
+			cout<<e.what()<<endl;
+		}
 	}
+	
+	
 }
 
 void login(Student& user) {
@@ -157,10 +165,10 @@ void login(Student& user) {
 	}
 }
 
-int dateCounter(){
+int dateCounter() {
 	time_t currentTime;
 	time(&currentTime);
-	return difftime(currentTime,startDate)/5; //return the number of time passed in day;
+	return difftime(currentTime, startDate) / 5;//return the number of time passed in day;
 }
 
 void printStudentMenu() {
@@ -199,10 +207,10 @@ void printBookList(vector<Book>& list) {
 }
 
 /**
- * @brief function to prompt user input for searching books, 
- * 
- * @param idInput 
- * @param searchArgs 
+ * @brief function to prompt user input for searching books,
+ *
+ * @param idInput
+ * @param searchArgs
  * @return int 0 means the user wants to search using ID, 1 means string searches
  */
 
@@ -248,7 +256,7 @@ void promptRenewBook(int& idInput) {
 }
 
 void promptAddBook(vector<string>& searchArgs) {
-	cout << "Enter the Title, Author, Category, and ISBN of the book you want to add to the library" << endl;
+	cout << "Enter the Title, Author, Category and ISBN of the book you want to add to the library" << endl;
 
 	cout << "Enter title: ";
 	cin >> searchArgs[0];
@@ -279,22 +287,21 @@ void scanBook(vector<Book>& bookList) {
 		//cout << myBook.getISBN() << endl;
 		fin >> copies;
 		for (int i = 0; i < copies; i++) {
+			myBook.setID();
 			bookList.push_back(myBook);
+			
 			//cout << myBook.getISBN() << " " << myBook.getTitle() << " " << myBook.getAuthor() << " " << myBook.getCategory() << endl;
 		}
 	} while (!fin.eof());
 
 	//generates a ID for each book in the booklist
-	for (int i = 0; i < bookList.size(); i++) {
-		bookList[i].setID(i);
-	}
-
 	fin.close();
 }
 
 //vector<Student>& studentList, vector<Teacher>& teacherList
 void scanStudent(vector<Student>& studentList) {
 	bool isTeacher;
+
 	ifstream fin("student.txt");
 	if (fin.fail()) {
 		cerr << "Error opening student file.";
@@ -302,19 +309,18 @@ void scanStudent(vector<Student>& studentList) {
 	}
 
 	//Teacher myTeacher;
-		Student myStudent;
+	Student myStudent;
 	do {
-		//fin >> isTeacher;
-		fin >> myStudent;
-		studentList.push_back(myStudent);
-		//if (isTeacher) {
-		//	fin >> myStudent;
+		fin >> isTeacher;
+		if (isTeacher) {
+		    fin >> myStudent;
 		//	//teacherList.push_back(myTeacher);
-		//}
-		//else {
-		//	fin >> myStudent;
-		//	//studentList.push_back(myStudent);
-		//}
+            myStudent.setIsStudent(false);
+            studentList.push_back(myStudent);
+		}
+		else {
+			fin >> myStudent;
+			studentList.push_back(myStudent);
+        }
 	} while (!fin.eof());
 }
-
