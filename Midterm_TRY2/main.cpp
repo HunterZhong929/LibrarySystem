@@ -248,7 +248,7 @@ void promptRenewBook(int& idInput) {
 }
 
 void promptAddBook(vector<string>& searchArgs) {
-	cout << "Enter the Title, Author, Category and ISBN of the book you want to add to the library" << endl;
+	cout << "Enter the Title, Author, Category, and ISBN of the book you want to add to the library" << endl;
 
 	cout << "Enter title: ";
 	cin >> searchArgs[0];
