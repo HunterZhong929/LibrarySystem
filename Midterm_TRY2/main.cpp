@@ -62,6 +62,7 @@ int main() {
 	login(loginStudent);
 	vector<Book> searchResult;
 	//--------------------------main loop-------------------------------
+	try{
 	while(true){
 		printMenu();
 		int input;
@@ -91,6 +92,10 @@ int main() {
 			case 0:
 				exit(0);
 		}
+		}
+	}
+	catch(runtime_error e){
+		cerr<<e.what()<<endl;
 	}
 
 }

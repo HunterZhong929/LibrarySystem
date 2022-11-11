@@ -48,6 +48,48 @@ void quickSort(vector<Book>& array, int low, int high) {
         quickSort(array, pi + 1, high);
     }
 }
+int partitionById(vector<Book>& array, int low, int high) {
+	// TODO
+    int i = low;
+    int j = high -1;
+    Book pivot = array[high];
+    do{
+    while(array[i].getID()<= pivot.getID() && i < high){
+        i++;
+    }
+    while(array[j].getID()>= pivot.getID() && j > low){
+        j--;
+    }
+    if(i<j){
+        Book tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+    }
+    }
+    while(i<j);
+    if(array[i].getID() > pivot.getID()){
+        Book tmp = array[i];
+        array[i] = array[high];
+        array[high] = tmp;
+    }
+    return i;
+}
+void quickSort(vector<Book>& array, int low, int high,bool id) {
+
+    if (low < high) {
+
+        // find the pivot element and move elements such that
+        // elements smaller than pivot are on left of pivot
+        // elements greater than pivot are on righ of pivot
+        int pi = partitionById(array, low, high);
+
+        // recursive call on the left of pivot
+        quickSort(array, low, pi - 1,id);
+
+        // recursive call on the right of pivot
+        quickSort(array, pi + 1, high,id);
+    }
+}
 Student::Student() {
 	maxCopies = 5;
 	maxBorrowPeriod = 150;//30 days = 150secs
@@ -90,12 +132,12 @@ vector<Book> Student::searchBook(vector<Book> bookList, vector<string> searchKey
  * @return Book 
  */
 Book Student::searchBook(vector<Book> bookList, int id){
-	quickSort(bookList, 0,bookList.size()-1);
+	quickSort(bookList, 0,bookList.size()-1,true);
 	//sort(bookList.begin(),bookList.end());
 	//TODO sort by id
 	//now the list is sorted, do the binary search
 	int low = 0;
-	int high = bookList.size();
+	int high = bookList.size()-1;
 	int mid;
 	while(low!=high){
 	mid = (low+high)/2;
@@ -112,7 +154,7 @@ Book Student::searchBook(vector<Book> bookList, int id){
 	}
 
 	if(bookList[mid].getIsBorrowed()){
-		throw std::runtime_error("the book you requested for is already been borrowed");
+		throw runtime_error("the book you requested for is already been borrowed");
 	}
 	return bookList[mid];
 
@@ -146,7 +188,8 @@ void Student::borrowBook(int id, vector<Book> bookList) {
 
 		
 			bookList[i].setBorrowDate(currentTime);
-			bookList[i].setExpirationDate(currentTime + maxBorrowPeriod);		//NEED TO CHANGE MAXBORROW PERIOD IN STUDENT.H
+			bookList[i].setExpirationDate(currentTime + maxBorrowPeriod);
+			borrowedList.push_back(bookList[i]);		//NEED TO CHANGE MAXBORROW PERIOD IN STUDENT.H
 			cout << "You have borrowed the book " << bookList[i].getTitle() << " with the ID " << bookList[i].getID() << endl;
 			return;
 		}
@@ -159,7 +202,7 @@ void Student::borrowBook(int id, vector<Book> bookList) {
 }
 /**
  * @brief given an ID, search for the book in the student's borrowed list, if it does not exist, throw error
- * 
+ * borrowed list should not be null and book should exist in the list, else exceptions are thrown
  * @param id 
  */
 void Student::returnBook(int id) {
@@ -171,8 +214,12 @@ void Student::returnBook(int id) {
 			break;
 		}
 	}
+	if(i=borrowedList.size()){
+		throw std::runtime_error("You did not borrow this book");
+	}
+	else{
 	borrowedList.erase(borrowedList.begin()+i);
-
+	}
 }
 /**
  * @brief given an ID, search it in the student's borrowed list, if it is null, throw error
