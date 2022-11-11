@@ -23,11 +23,14 @@ void promptAddBook(vector<string>& searchArgs);
 void promptRemoveBook(int& idInput);
 void printBookList(vector<Book>& list);
 int Book::IDassign = 0;
+time_t Book::startTime;
 time_t startDate;
+
+
 
 int main() {
 	time(&startDate);
-
+    Book::startTime = startDate;
 	//------testing code---------
 	//vector<Teacher> teacherList;
 
@@ -38,9 +41,11 @@ int main() {
 	time(&t1);
 	cout << t1 << endl;
 	//this_thread::sleep_for(chrono::milliseconds(5000));
-	time_t t2;
-	time(&t2);
-	cout << t2 << endl;
+	time_t startTime;
+
+	time(&startTime);
+	
+	cout << startTime << endl;
 	scanBook(bookList);
 
 	//print book list
@@ -70,7 +75,9 @@ int main() {
 		printTeacherMenu();
 	}
 	
-	while (true) {
+	while (true) {	
+		
+	
 		int input;
 		int idInput;
 		int chooseSearch;
@@ -103,12 +110,13 @@ int main() {
 			break;
 		case 5:
 			promptAddBook(searchArgs);
-			user.addBook(searchArgs[0], searchArgs[1], searchArgs[2], searchArgs[3]);
-			//printBookList();
+			bookList.push_back(user.addBook(searchArgs[0], searchArgs[1], searchArgs[2], searchArgs[3]));
+			printBookList(bookList);
 			break;
 		case 6:
 			promptRemoveBook(idInput);
 			user.removeBook(idInput, bookList);
+			printBookList(bookList);
 			break;
 		case 0:
 			cout << "Logging out...";
@@ -116,6 +124,7 @@ int main() {
 			break;
 		}
 		}
+
 		catch(runtime_error e){
 			cout<<e.what()<<endl;
 		}
@@ -278,16 +287,14 @@ void scanBook(vector<Book>& bookList) {
 		//cout << myBook.getISBN() << endl;
 		fin >> copies;
 		for (int i = 0; i < copies; i++) {
+			myBook.setID();
 			bookList.push_back(myBook);
+			
 			//cout << myBook.getISBN() << " " << myBook.getTitle() << " " << myBook.getAuthor() << " " << myBook.getCategory() << endl;
 		}
 	} while (!fin.eof());
 
 	//generates a ID for each book in the booklist
-	for (int i = 0; i < bookList.size(); i++) {
-		bookList[i].setID(i);
-	}
-
 	fin.close();
 }
 

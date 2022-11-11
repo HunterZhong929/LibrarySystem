@@ -18,7 +18,7 @@ public:										//search book must also organize the bookList
 	Student(bool isStudent_);
 	vector<Book> searchBook(vector<Book> bookList,vector<string> searchKey);		//inside the searchBook function we will ask the user to input (int)ID, or (strings)ISBN etc.
 	Book searchBook(vector<Book> bookList, int id);
-	void borrowBook(int id, vector<Book> bookList);		//will check inside borrowbook if
+	void borrowBook(int id, vector<Book>& bookList);		//will check inside borrowbook if
 	void returnBook(int id);
 	void renewBook(int id);
 	//check expired function?
@@ -40,7 +40,7 @@ public:										//search book must also organize the bookList
 	Book addBook(string title, string author, string category, string ISBN);
 	void removeBook(int id, vector<Book>& library);
 	bool getIsStudent() const { return isStudent; }
-	void setIsStudent(bool isStudent_) { isStudent = isStudent_; }
+	void setIsStudent(bool isStudent_) { isStudent = isStudent_;maxBorrowPeriod = 1;maxCopies = 10; }
 	void sortBook(vector<Book> bookList);
 	friend void quickSort(vector<Book>& bookList, int low, int high);
 	friend int partition(vector<Book>& array, int low, int high);

@@ -35,7 +35,14 @@ Book::Book(string isbn, string t, string a, string c) {
 //overloads
 //ofstream overload will be used to output things to a file (unused in midterm project)
 ostream& operator<<(ostream& output, Book& book) {
-	output << book.getISBN() << " " << book.getTitle() << " " << book.getAuthor() << " " << book.getCategory() << " " << book.getID() << endl;
+	output << book.getISBN() << " " << book.getTitle() << " " << book.getAuthor() << " " << book.getCategory() << " " << book.getID();
+	if(book.getIsBorrowed()){
+	 cout<<" borrowed date: "
+	<<(book.getBorrowDate()-Book::startTime)/5<<" expiration date: "
+	<<(book.getExpirationDate()-Book::startTime)/5 <<endl;}
+	else{
+		cout<<endl;
+	}
 	return output;
 	//add more
 }

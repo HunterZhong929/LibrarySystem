@@ -19,6 +19,7 @@ public:
 	Book(string title_, string author_, string categroy_, string ISBN_ );
 	Book(string isbn, string TITLE, string AUTHOR, string CATEGORY, int id);
 	static int IDassign;	
+	static time_t startTime;
 	//overloaded << and >>
 	friend ostream& operator<<(ostream& output, Book& book);
 	friend istream& operator>>(istream& input, Book& book);
@@ -38,7 +39,7 @@ public:
 	string getCategory() const { return category; }
 	void setCategory(const string &category_) { category = category_; }
 	int getID() const { return ID; }
-	void setID(int iD) { ID = iD; }
+	void setID() { ID = IDassign++; }
 	string getReaderName() const { return readerName; }
 	void setReaderName(const string &readerName_) { readerName = readerName_; }
 	int getBorrowDate() const { return borrowDate; }

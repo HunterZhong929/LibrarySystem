@@ -153,15 +153,11 @@ Book Student::searchBook(vector<Book> bookList, int id){
 		}
 	}
 
-	if(bookList[mid].getIsBorrowed()){
-		throw runtime_error("the book you requested for is already been borrowed");
-	}
 	return bookList[mid];
 
 
 }
-//TODO: modify the code so it works for both teacher and student
-void Student::borrowBook(int id, vector<Book> bookList) {
+void Student::borrowBook(int id, vector<Book>& bookList) {
 	//checks if any books this student owns is overdue
 	time_t currentTime;
 	time(&currentTime);
@@ -176,17 +172,17 @@ void Student::borrowBook(int id, vector<Book> bookList) {
 		}
 	}
 
-	if (borrowedList.size() >= 5) {
+	if (borrowedList.size() >  maxCopies ) {
 		cout << "You have reached the capacity of 5 books." << endl;
 		return;
 	}
 
 	for (int i = 0; i < bookList.size(); i++) {
 		//checks through the library's books to find the appropriate ID, then checks the readerName to see if this book is not borrwed
-		if ( (bookList[i].getID() == id) && (bookList[i].getReaderName() == " ")) {
+		if ( (bookList[i].getID() == id) && !(bookList[i].getIsBorrowed())) {
 			bookList[i].setReaderName(username);
 
-		
+			bookList[i].setIsBorrowed(true);
 			bookList[i].setBorrowDate(currentTime);
 			bookList[i].setExpirationDate(currentTime + maxBorrowPeriod);
 			borrowedList.push_back(bookList[i]);		//NEED TO CHANGE MAXBORROW PERIOD IN STUDENT.H
@@ -205,6 +201,7 @@ void Student::borrowBook(int id, vector<Book> bookList) {
  * borrowed list should not be null and book should exist in the list, else exceptions are thrown
  * @param id 
  */
+
 void Student::returnBook(int id) {
 	int i;
 	for(i = 0;i<borrowedList.size();i++){
@@ -214,10 +211,11 @@ void Student::returnBook(int id) {
 			break;
 		}
 	}
-	if(i=borrowedList.size()){
+	if(i==borrowedList.size()){
 		throw std::runtime_error("You did not borrow this book");
 	}
 	else{
+	cout<<"You have successfuly returned the book "<<borrowedList[i]<<endl;
 	borrowedList.erase(borrowedList.begin()+i);
 	}
 }
@@ -227,11 +225,24 @@ void Student::returnBook(int id) {
  * @param id 
  */
 void Student::renewBook(int id){
-	Book renew = searchBook(borrowedList,id);
+	Book renew;
+	bool exist = false;
+	for(auto i:borrowedList){
+		if(i.getID()==id){
+			renew = i;
+			exist = true;
+			break;
+		}
+	}
+	if(!exist){
+		throw runtime_error("you did not borrow this book");
+	}
 	time_t currentTime;
 	time(&currentTime);
 	renew.setBorrowDate(currentTime);
 	renew.setExpirationDate(renew.getBorrowDate()+maxBorrowPeriod);
+	cout<<"You have successfully renewed the borrowed book"<<endl;
+	cout<<renew;
 	
 }
 
@@ -268,7 +279,13 @@ void Student::removeBook(int id,vector<Book>& library) {
 			break;
 		}
 	}
+	if(i==library.size()){
+		throw std::runtime_error("the book with indicated id does not exist");
+	}
+
 	library.erase(library.begin()+i);
+	cout<<"You have successfully deleted book with id "<<id<<endl;
+	
 	//
 
 
@@ -278,7 +295,7 @@ void Student::removeBook(int id,vector<Book>& library) {
 Student::Student(bool isStudent_){
 	isStudent = isStudent_;
 	maxCopies = 10;
-	maxBorrowPeriod = 250; //5sec*50days = 250
+	maxBorrowPeriod = 10; //5sec*50days = 250
 }
 	
 	
