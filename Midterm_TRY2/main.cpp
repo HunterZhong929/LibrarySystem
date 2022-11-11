@@ -1,25 +1,28 @@
 #include <iostream>
 #include "Student.h"
-#include<ctime>
-#include<chrono>
-#include<thread>
+#include <ctime>
+#include <chrono>
+#include <thread>
 #include <vector>
 #include <fstream>
 using namespace std;
+
 vector<Book> bookList;
 vector<Student> studentList;
-bool login(Student& loginStudent);
+void login(Student& user);
 void scanBook(vector<Book>& booklist);
 void scanStudent(vector<Student>& studentList);
 int dateCounter();
-void printMenu();
-int prompt_searchBook(int& idInput, vector<string>& searchArgs);
-void prompt_borrowBook();
-
-
+int promptSearchBook(int& idInput, vector<string>& searchArgs);
+void promptBorrowBook(int& idInput);
+void promptReturnBook(int& idInput);
+void promptRenewBook(int& idInput);
+void promptAddBook(vector<string>& searchArgs);
+void promptRemoveBook(int& idInput);
 void printBookList(vector<Book>& booklist);
 int Book::IDassign = 0;
 time_t startDate;
+
 int main() {
 	time(&startDate);
 	
@@ -58,55 +61,143 @@ int main() {
 	//cout << "Please enter your username and password: ";
 	//cin >> username >> password;
 	//printMenu();
-	Student loginStudent;
-	login(loginStudent);
+	Student user;
+	login(user);
 	vector<Book> searchResult;
+	
+	if (user.getIsStudent()) {
+		system("clear");
+		printStudentMenu();
+	} else {
+		system("clear");
+		printTeacherMenu();
+	}
 	//--------------------------main loop-------------------------------
 	try{
-	while(true){
-		printMenu();
+		while (true) {
 		int input;
 		int idInput;
 		int chooseSearch;
-		cin>>input;
-		switch(input){
-			case 1:
-				chooseSearch = prompt_searchBook(idInput,searchArgs);
-				if(!chooseSearch){
-						Book search = loginStudent.searchBook(bookList,idInput);
-						cout<<search;
-				}
-				else if(chooseSearch){
-					searchResult = loginStudent.searchBook(bookList, searchArgs);
-					printBookList(searchResult);
-					
-				}
-				break;
-			case 2:
+		vector<Book> searchResult;
+		cin >> input;
 
-				break;
-			case 3:
-				break;
-			case 4:
-				break;
-			case 0:
-				exit(0);
+		switch (input) {
+		case 1:
+			chooseSearch = promptSearchBook(idInput, searchArgs); //params are ID input and vector for other search params
+			if (!chooseSearch) {
+				Book searchResult = user.searchBook(bookList, idInput);
+				cout<<searchResult;
+			}
+			else if (chooseSearch) {
+				searchResult = user.searchBook(bookList, searchArgs);
+				printBookList(searchResult);
+			}
+			break;
+		case 2:
+			promptBorrowBook(idInput);
+			user.borrowBook(idInput, bookList);
+			break;
+		case 3:
+			promptReturnBook(idInput);
+			user.returnBook(idInput);
+			break;
+		case 4:
+			promptRenewBook(idInput);
+			user.renewBook(idInput);
+			break;
+		case 5:
+			promptAddBook(searchArgs);
+			user.addBook(searchArgs[0], searchArgs[1], searchArgs[2], searchArgs[3]);
+			//printBookList();
+			break;
+		case 6:
+			promptRemoveBook(idInput);
+			user.removeBook(idInput, bookList);
+			break;
+		case 0:
+			cout << "Logging out...";
+			exit(1);
+			break;
 		}
 		}
-	}
-	catch(runtime_error e){
+	} catch(runtime_error e){
 		cerr<<e.what()<<endl;
 	}
-
 }
 
+void login(Student& user) {
+	cout << "Logging into the Library Management System, please enter your username and password" << endl;
+	string username, password;
+	bool exist = false;
+
+	while (!exist) {
+		cout << "Username: ";
+		cin >> username;
+
+		for (auto student : studentList) {
+			if (student.getUsername() == username) {
+				user = student;
+				exist = true;
+				break;
+			}
+		}
+
+		if (!exist) cout << "The student with the username " << username << " does not exist. Please try again" << endl;
+	}
+	
+	while (true) {
+		cout << "Password: ";
+		cin >> password;
+		if (password == user.getPassword()) {
+			cout << "Successfully logged in" << endl;
+			break;
+		} else {
+			cout << "Incorrect password. Please try again" << endl;
+		}
+	}
+}
 
 int dateCounter(){
 	time_t currentTime;
 	time(&currentTime);
-	return difftime(currentTime,startDate)/5;//return the number of time passed in day;
-
+	return difftime(currentTime,startDate)/5; //return the number of time passed in day;
 }
+
+void printStudentMenu() {
+	cout << "-----------------------------------------------------------------" << endl;
+	cout << "-\t\t\tWelcome to My Library!\t\t\t-" << endl;
+	cout << "-----------------------------------------------------------------" << endl;
+	cout << "\nWelcome back, Student" << endl;
+	cout << "\nPlease choose:" << endl;
+	cout << "\t1 -- Search Book" << endl;
+	cout << "\t2 -- Borrow Book" << endl;
+	cout << "\t3 -- Return Book" << endl;
+	cout << "\t4 -- Renew Book" << endl;
+	cout << "\t0 -- Log Out\n" << endl;
+}
+
+void printTeacherMenu() {
+	cout << "-----------------------------------------------------------------" << endl;
+	cout << "-\t\t\tWelcome to My Library!\t\t\t-" << endl;
+	cout << "-----------------------------------------------------------------" << endl;
+	cout << "\nWelcome back, Teacher" << endl;
+	cout << "\nPlease choose:" << endl;
+	cout << "\t1 -- Search Book" << endl;
+	cout << "\t2 -- Borrow Book" << endl;
+	cout << "\t3 -- Return Book" << endl;
+	cout << "\t4 -- Renew Book" << endl;
+	cout << "\t5 -- Request a new book copy" << endl;
+	cout << "\t6 -- Delete an existing copy" << endl;
+	cout << "\t0 -- Log Out\n" << endl;
+}
+
+void printBookList(vector<Book>& list) {
+	cout << "The list of books fitting the search conditions is displayed below:" << endl;
+	for(auto i:list){
+		cout<<i;
+	}
+}
+
 /**
  * @brief function to prompt user input for searching books, 
  * 
@@ -114,90 +205,64 @@ int dateCounter(){
  * @param searchArgs 
  * @return int 0 means the user wants to search using ID, 1 means string searches
  */
-int prompt_searchBook(int& idInput, vector<string>& searchArgs){
-	cout<<"Do you want to search by book ID or by Title, Author, Category and ISBN?"<<endl;
-	cout<<"enter I/T to select"<<endl;
+
+int promptSearchBook(int& idInput, vector<string>& searchArgs) {
+	cout << "Do you want to search by book ID or by Title, Author, Category and ISBN?" << endl;
+	cout << "enter I/T to select" << endl;
 	char c;
-	cin>>c;
-	switch(c){
-		case 'I':
-			cout<<"input book id:";
-			cin>>idInput;
-			return 0;
-		case 'T':
-			cout<<"Enter title:";
-			cin>>searchArgs[0];
-			cout<<endl;
-			cout<<"Enter author:";
-			cin>>searchArgs[1];
-			cout<<endl;
-			cout<<"Enter category:";
-			cin>>searchArgs[2];
-			cout<<endl;
-			cout<<"Enter ISBN: ";
-			cin>>searchArgs[3];
-			cout<<endl;
-			return 1;
-		default:
-			cout<<"Invalid input"<<endl;
-	}	
-}
-inline void prompt_borrowBook(int& idInput) {
-	
-}
-inline void printBookList(vector<Book>& booklist) {
-	for(auto i:bookList){
-		cout<<i<<endl;
+	cin >> c;
+
+	switch (c) {
+	case 'I':
+		cout << "Enter book ID: ";
+		cin >> idInput;
+		return 0;
+	case 'T':
+		cout << "Enter title: ";
+		cin >> searchArgs[0];
+		cout << "Enter author: ";
+		cin >> searchArgs[1];
+		cout << "Enter category: ";
+		cin >> searchArgs[2];
+		cout << "Enter ISBN: ";
+		cin >> searchArgs[3];
+		return 1;
+	default:
+		cout << "Invalid input" << endl;
 	}
 }
-void userInterface(){
-	//PRINT MENU
+
+void promptBorrowBook(int& idInput) {
+	cout << "Enter the ID of the book you wish to borrow: ";
+	cin >> idInput;
 }
-void printMenu(){
-	cout<<"1--Search Book"<<endl;
-	cout<<"2--Borrow Book"<<endl;
-	cout<<"3--Return Book"<<endl;
-	cout<<"4--Renew Book"<<endl;
-	cout<<"0--logout"<<endl;
 
-
+void promptReturnBook(int& idInput) {
+	cout << "Enter the ID of the book you wish to return: ";
+	cin >> idInput;
 }
-bool login(Student& loginStudent){
-	cout<<"Login to the system, please enter username and password"<<endl;
-	cout<<"Username: ";
-	string userName, password;
-	cin>>userName;
-	cout<<endl;
-	
-	bool exist=false;
-	for(auto i: studentList){
-		if(i.getUsername()==userName){
-			loginStudent = i;
-			exist = true;
-			break;
-		}
-	}
-	if(!exist){
-		cout<<"the student with the username "<<userName<<" does not exist!"<<endl;
-		return false;
-	}
-	
-	while(true){
-		cout<<"password:";
-		cin>>password;
-		if(password==loginStudent.getPassword()){
-			cout<<"successfully logged in"<<endl;
-			return true;
-		}
-		else{
-			cout<<"Incorrect password!"<<endl;
-		}
-	}
-	
-	//if the entered username is not in the list, ask the user to reenter
 
+void promptRenewBook(int& idInput) {
+	cout << "Enter the ID of the book you wish to renew: ";
+	cin >> idInput;
+}
 
+void promptAddBook(vector<string>& searchArgs) {
+	cout << "Enter the Title, Author, Category and ISBN of the book you want to add to the library" << endl;
 
+	cout << "Enter title: ";
+	cin >> searchArgs[0];
+	cout << "Enter author: ";
+	cin >> searchArgs[1];
+	cout << "Enter category: ";
+	cin >> searchArgs[2];
+	cout << "Enter ISBN: ";
+	cin >> searchArgs[3];
+}
+
+void promptRemoveBook(int& idInput) {
+	cout << "Enter the ID of the book you want to remove from the library: ";
+	cin >> idInput;
 }
 
 void scanBook(vector<Book>& bookList) {
@@ -237,22 +302,19 @@ void scanStudent(vector<Student>& studentList) {
 	}
 
 	//Teacher myTeacher;
-	Student myStudent;
+		Student myStudent;
 	do {
-		fin >> isTeacher;
+		//fin >> isTeacher;
 		fin >> myStudent;
 		studentList.push_back(myStudent);
-		/*
-		if (isTeacher) {
-			//fin >> myTeacher;
-			//teacherList.push_back(myTeacher);
-		}
-		else {
-			//fin >> myStudent;
-			//studentList.push_back(myStudent);
-		}
-		*/
+		//if (isTeacher) {
+		//	fin >> myStudent;
+		//	//teacherList.push_back(myTeacher);
+		//}
+		//else {
+		//	fin >> myStudent;
+		//	//studentList.push_back(myStudent);
+		//}
 	} while (!fin.eof());
-
 }
 

@@ -241,11 +241,13 @@ ostream& operator <<(ostream& output, Student& student) {
 }
 
 istream& operator >>(istream& input, Student& student) {
+	bool isTeacher;
 	string inputName;
 	string inputPass;
-	input >> inputName >> inputPass;
+	input >> isTeacher >> inputName >> inputPass;
 	student.setUsername(inputName);
 	student.setPassword(inputPass);
+	student.setIsStudent(!isTeacher);
 	return input;
 }
 
